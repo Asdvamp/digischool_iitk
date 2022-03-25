@@ -10,6 +10,9 @@ class CLASS_COURSES_MAPPING(models.Model):
     # an array represented as string, where, each element is a course_id which is nothing but courseapp.AVALIABLE_COURSES course_id.
     course_id_array = models.CharField(max_length=COURSE_ID_ARRAY_MAX_LENGTH)
 
+    def __str__(self):
+        return str(self.unique_id)
+
 
 class AVAILABLE_COURSES(models.Model):
     # format, "sc-cl-cs-ofyr" subject_code:class:section:offeringyear
@@ -20,3 +23,6 @@ class AVAILABLE_COURSES(models.Model):
     # Needs to be updated whenever new lecture added # Backend handlingI
     lecture_series_number = models.IntegerField(default=0)
     test_series_number = models.IntegerField(default=0)  # Same.
+
+    def __str__(self):
+        return str(self.course_id)

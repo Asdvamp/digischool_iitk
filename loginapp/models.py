@@ -24,6 +24,9 @@ class USER_SIGNUP_DATABASE(models.Model):
     class_course_field = models.OneToOneField(
         "courseapp.CLASS_COURSES_MAPPING", on_delete=models.CASCADE, null=True)  # for teachers it will be "None"
 
+    def __str__(self):
+        return str(self.first_name + " " + self.last_name)
+
 
 class QUERY_DATABASE(models.Model):
     query_date_time = models.DateTimeField(auto_now_add=True)
@@ -48,3 +51,6 @@ class TEACHER_CODE_MAPPING(models.Model):
     teacher_email = models.EmailField()
     teacher_mapping = models.OneToOneField(
         "courseapp.AVAILABLE_COURSES", on_delete=models.CASCADE)
+
+    def __str__(self):
+        return str(self.teacher_email)
