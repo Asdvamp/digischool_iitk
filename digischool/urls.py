@@ -22,6 +22,8 @@ from django.conf import settings
 from django.conf.urls.static import static
 from lectureapp import views as lecture_views
 
+admin.site.site_header = "DigiSchool Admin"
+
 urlpatterns = [
     path('admin/', admin.site.urls),
 
@@ -46,7 +48,7 @@ urlpatterns = [
     path("lecture/", lecture_views.lecturePage),
     path("lecture/view/<str:lecture_unique_id>", lecture_views.eachLectures),
     #
-    
-    path("", login_views.homePage) # keep this in last.
+
+    path("", login_views.homePage)  # keep this in last.
 ]
 urlpatterns += static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)

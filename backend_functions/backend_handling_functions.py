@@ -2,6 +2,7 @@ from courseapp import models as course_models
 from . import universal_values
 from loginapp import models as login_models
 
+
 def auto_assign_course(user_cls, user_sec, user_category):
 	if user_category == "STUDENT":
 		unique_id = user_cls + user_sec + str(universal_values.OFFERING_YEAR)
