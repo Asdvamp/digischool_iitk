@@ -15,7 +15,9 @@ import datetime
 from backend_functions.universal_values import *
 
 # whole test app to be modified with new models. Moreover extracting course using class and
-#section must be done from TEACHER_CODE_MAPPING and connected_to of USER_SIGNUP_DATABASE.
+# section must be done from TEACHER_CODE_MAPPING and connected_to of USER_SIGNUP_DATABASE.
+
+
 def testPage(request):
     # Session and tokens.
     csrf_token = csrf.get_token(request)
@@ -26,43 +28,48 @@ def testPage(request):
         active_status = True
         user_id = request.session["user_id"]
 
-	if active_status:
-		extract_user__user_signup_database = login_models.USER_SIGNUP_DATABASE.objects.get(id=user_id)
-		# to check -------------------------
-		if extract_user__user_signup_database.user_category == "TEACHER":
-			courses = course_models.AVAILABLE_COURSES.objects.filter(course_instructor= extract_user__user_signup_database)
-			if not (request.POST.get("upload", "no").strip().lower() == "yes"):
+    if active_status:
+        extract_user__user_signup_database = login_models.USER_SIGNUP_DATABASE.objects.get(
+            id=user_id)
+        # to check -------------------------
+        if extract_user__user_signup_database.user_category == "TEACHER":
+            courses = course_models.AVAILABLE_COURSES.objects.filter(
+                course_instructor=extract_user__user_signup_database)
+            if not (request.POST.get("upload", "no").strip().lower() == "yes"):
 
-				return render(request, "teacher_test.html", {"csrf_token":csrf_token, "not_yet_upload": True, "some_error":False, "user_courses":courses, "test_upload_for_course": None})
-			else:	
-				selected_course_id = request.POST.get("course_available", "").strip()
-				verified_course_id = False
-				for c in courses:
-					if c.course_id == selected_course_id:
-						verified_course_id = True
-						break
-				if verified_course_id and selected_course_id:
-					return render(request, "teacher_test.html", {"csrf_token":csrf_token, "not_yet_upload": False, "some_error":False, "user_courses": None, "test_upload_for_course":selected_course_id})
-				else:
-					# received course_id was tempered.
-					return render(request, "teacher_test.html", {"csrf_token":csrf_token, "not_yet_upload": True, "some_error":True, "user_courses":courses, "test_upload_for_course":None})
-		
-		# ------------------------------------
-		if extract_user__user_signup_database.user_category == "STUDENT":
+                return render(request, "teacher_test.html", {"csrf_token": csrf_token, "not_yet_upload": True, "some_error": False, "user_courses": courses, "test_upload_for_course": None})
+            else:
+                selected_course_id = request.POST.get(
+                    "course_available", "").strip()
+                verified_course_id = False
+                for c in courses:
+                    if c.course_id == selected_course_id:
+                        verified_course_id = True
+                        break
+                if verified_course_id and selected_course_id:
+                    return render(request, "teacher_test.html", {"csrf_token": csrf_token, "not_yet_upload": False, "some_error": False, "user_courses": None, "test_upload_for_course": selected_course_id})
+                else:
+                    # received course_id was tempered.
+                    return render(request, "teacher_test.html", {"csrf_token": csrf_token, "not_yet_upload": True, "some_error": True, "user_courses": courses, "test_upload_for_course": None})
 
-			selected_user_class = extract_user__user_signup_database.user_class
-			selected_user_section = extract_user__user_signup_database.user_section
-			generated_unique_id = selected_user_class + selected_user_section + OFFERING_YEAR
+        # ------------------------------------
+        if extract_user__user_signup_database.user_category == "STUDENT":
 
-			all_course_id = course_models.CLASS_COURSES_MAPPING.objects.get(unique_id=generated_unique_id)
-			all_course_id = all_course_id.course_id_array
-			all_course_id = all_course_id.strip().split(" ")
+            selected_user_class = extract_user__user_signup_database.user_class
+            selected_user_section = extract_user__user_signup_database.user_section
+            generated_unique_id = selected_user_class + \
+                selected_user_section + OFFERING_YEAR
 
-			return render(request, "student_test.html", {"csrf_token": csrf_token, "user_courses":course_models.AVAILABLE_COURSES, "all_course_list":all_course_id, "course_full": FULL_NAME, "subject_code": AVAILABLE_SUBJECTS, "current_datetime":datetime.datetime.now()})
-	else:
-		# session is inactive.
-		return HttpResponse(f'''<body><meta http-equiv="refresh" content='0; url="/login/"'/></body>''')
-		
+            all_course_id = course_models.CLASS_COURSES_MAPPING.objects.get(
+                unique_id=generated_unique_id)
+            all_course_id = all_course_id.course_id_array
+            all_course_id = all_course_id.strip().split(" ")
+
+            return render(request, "student_test.html", {"csrf_token": csrf_token, "user_courses": course_models.AVAILABLE_COURSES, "all_course_list": all_course_id, "course_full": FULL_NAME, "subject_code": AVAILABLE_SUBJECTS, "current_datetime": datetime.datetime.now()})
+    else:
+        # session is inactive.
+        return HttpResponse(f'''<body><meta http-equiv="refresh" content='0; url="/login/"'/></body>''')
+
 # till here done--------------------------
 
 
@@ -83,7 +90,7 @@ def testUploaded(request):
         0]
     if active_status and extract_user__user_signup_database.user_category == "TEACHER":
 
-        courses = course_models.AVAILABLE_COURSE.objects.filter(
+        courses = course_models.AVAILABLE_COURSES.objects.filter(
             course_instructor=extract_user__user_signup_database)
 
         # ------------again same strip and validation. And if tempered alert and then go to no_yet_upoload section.
@@ -173,7 +180,7 @@ def eachTestView(request, given_unique_id):
                 0]
 
             if extract_user__user_signup_database.user_category == "TEACHER":
-                courses = course_models.AVAILABLE_COURSE.objects.filter(
+                courses = course_models.AVAILABLE_COURSES.objects.filter(
                     course_instructor=extract_user__user_signup_database)
                 autheticated = False
                 for c in courses:
@@ -200,7 +207,7 @@ def eachTestView(request, given_unique_id):
 
                 autheticated = False
                 for each_course_id in all_course_id:
-                    each_course = course_models.AVAILABLE_COURSE.objects.filter(
+                    each_course = course_models.AVAILABLE_COURSES.objects.filter(
                         course_id=each_course_id)[0]
                     all_test_list_in_a_course = each_course.all_tests_set.all()
                     for t in all_test_list_in_a_course:
